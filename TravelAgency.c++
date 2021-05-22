@@ -12,7 +12,8 @@ Aditya Jamwal          20103283
 #include<stdio.h>
 #include<process.h>
 #include<fstream>
-#include<ctype.h>
+#include<cctype>
+#include<stdio.h>
 #include<stdlib.h>
 #include<iomanip>
 using namespace std;
@@ -29,11 +30,14 @@ class PersonalDetails //class for collecting the personal details
             num = 0;
             cout<<"\n\n:::::::::::::::::::::: PERSONAL DETAILS ::::::::::::::::::::::\n";
             cout<<"\n* Please fill in the details:\n1.Family Name: ";
-            gets(FamilyName);
+            cin.ignore();
+            cin.getline(FamilyName,30);
             cout<<"\n2.Address: ";
-            gets(Address);
+            cin.ignore();
+            cin.getline(Address,50);
             cout<<"\n3.Contact Number(10 Digit Mobile Number) : ";
-            gets(PhoneNumber);
+            cin.ignore();
+            cin.getline(PhoneNumber,15);
             cout<<"\nEnter The No of People Travelling: ";
             cin>>numppl;
             system("cls");
@@ -45,13 +49,15 @@ class PersonalDetails //class for collecting the personal details
                     cout<<endl<<"\nMember "<<i+1;
                     cout<<"\n~~~~~~~~~~~~~~~";
                     cout<<"\nFirst Name: ";
-                    gets(Name[i]);
+                    cin.ignore();
+                    cin.getline(Name[i],20);
                     cout<<"\nAge: ";
                     cin>>age[i];
                     cout<<"\nSex (M/F): ";
                     cin>>gender[i];
                     cout<<"\nPassport Number: ";
-                    gets(PassportNum[i]);
+                    cin.ignore();
+                    cin.getline(PassportNum[i],9);
                     if(age[i]<5)
                     {
                         num++;    //to calculate no of travellers below 5 yrs
@@ -324,7 +330,7 @@ class TravelDetails
             cout<<"\n\nSubject\t\tCost(for 1)\tNo of ppl\tTotal";
             cout<<"\n\nTravel\t\t"<<dcst<<"\t\t   "<<num1<<"\t\t"<<num1*dcst;
             gttl+=num1*dcst;
-            cout<<"\nDeck\t\t"<<Class<<"\t\t   "<<num1<<"\t\t"<<Class*num1;
+            cout<<"\nClass\t\t"<<Class<<"\t\t   "<<num1<<"\t\t"<<Class*num1;
             gttl+=Class*num1;
             if(pool==1)
             {
@@ -526,13 +532,10 @@ int main()
   system("cls");
 
   ifstream fl("INITIAL.txt",ios::binary); //initialisation of code
-  if(!fl)
-  cout<<"\nError";
   fl.read((char*)&code,sizeof(code));
   fl.close();
   int opt,opt1,opt2,opt3,opt4;
   int acceptcode,flag;
-  getch();
   system("cls");
   do
   {
@@ -548,39 +551,41 @@ int main()
     cin>>opt;
     switch(opt)
     {
-      case 1:do
+      case 1: do
             {
                 system("cls");
-                cout<<"\nNEW USER\n";
-                cout<<"****";
-                cout<<"\nChoose the type of details you want to enter:";
-                cout<<"\n1.Personal Details\n2.Travel Details\n3.Back\n";
+                cout<<"\n\n    NEW USER\n";
+                cout<<"*********\n\n";
+                cout<<"\n\nChoose the type of details you want to enter:";
+                cout<<"\n\n1.Personal Details\n2.Travel Details\n3.Back\n\n";
                 cin>>opt1;
-                switch(opt1)
+                if(opt1==1)
                 {
-                    case 1:PD.p_input(++code);
-                        ofstream ofl("PersonalDetails.txt",ios::binary|ios::app);
-                        if(!ofl)
-                        cout<<"\n\n\t\tSorry.The File Cannot Be Opened For Writing"<<endl;
-                        ofl.write((char*)&PD,sizeof(PD));
-                        ofl.close();
-                    break;
-                    case 2:TD.t_input(code);
-                        ofstream ofl1("TravelDetails.txt",ios::binary|ios::app);
-                        if(!ofl1)
-                        cout<<"\n\n\t\tSorry.The File Cannot Be Opened For Writing"<<endl;
-                        ofl1.write((char*)&TD,sizeof(TD));
-                        ofl1.close();
-                        system("cls");
-                        cout<<"\n\n\n\n!!!!!Your Details Have Been Registered.Please Make A Note Of This Code: "<<code;
-                        cout<<"\n\n* For modifications,Please visit 'existing user' section in the main screen";
-                        getch();
-                    break;
+                   code++;
+                    PD.p_input(code);
+                    ofstream ofl("PersonalDetails.txt",ios::binary|ios::app);
+                    if(!ofl)
+                        cout<<"\n\nSorry.The File Cannot Be Opened For Writing"<<endl;
+                    ofl.write((char*)&PD,sizeof(PD));
+                    ofl.close();
+                }
+                else if(opt1==2)
+                {
+                    TD.t_input(code);
+                    ofstream ofl1("TravelDetails.txt",ios::binary|ios::app);
+                    if(!ofl1)
+                    cout<<"\n\n\t\tSorry.The File Cannot Be Opened For Writing"<<endl;
+                    ofl1.write((char*)&TD,sizeof(TD));
+                    ofl1.close();
+                    system("cls");
+                    cout<<"\n\n\n\n!!!!!Your Details Have Been Registered.Please Make A Note Of This Code: "<<code;
+                    cout<<"\n\n* For modifications,Please visit 'existing user' section in the main screen";
+                    getch();
                 }
             }while(opt1!=3);
-	    break;
-      case 2:system("cls");
-            cout<<"\n\n\t\t\t** EXISTING USER **\n\n\t\tPlease Enter The Travel Code That Was Given To You\n\n\t\t\t ";
+        break;
+        case 2:system("cls");
+            cout<<"\n\n** EXISTING USER **\n\nPlease Enter The Travel Code That Was Given To You\n\n";
             cin>>acceptcode;
             if(acceptcode>code)
             {
@@ -595,118 +600,124 @@ int main()
                 do
                 {
                     system("cls");
-                    cout<<"\n\n\t\t\t@@@@@@@@@ Information Centre @@@@@@@@@";
-                    cout<<"\n\t\t\t\t  ~~~~~~~";
-                    cout<<"\n\n\tPlease select the type of operation that you would like to perform:";
-                    cout<<"\n\n\t\t\t1.View Personal Details\n\n\t\t\t2.View Travel Details\n\n\t\t\t3.Edit Details\n\n\t\t\t4.Compute Bill\n\n\t\t\t5.Back\n\n\t\t\t ";
+                    cout<<"\n\n@@@@@@@@@Information Centre@@@@@@@@@";
+                    cout<<"\n~~~~~~~";
+                    cout<<"\n\nPlease select the type of operation that you would like to perform:";
+                    cout<<"\n1.View Personal Details\n\n2.View Travel Details\n\n3.Edit Details\n\n4.Compute Bill\n\n5.Back\n";
                     cin>>opt2;
-                    switch(opt2)
+                    if(opt2==1)
                     {
-                        case 1:ifstream ifl("PersonalDetails.txt",ios::binary);
-                            if(!ifl)
-                            cout<<"\nError";
-                            ifl.read((char*)&PD,sizeof(PD));
-                            while(!ifl.eof())
-                            {
-                            if(PD.givecode()==acceptcode)
-                            {
-                                break;
-                            }
-                            ifl.read((char*)&PD,sizeof(PD));
-                            }
-                            PD.p_output();
-                            ifl.close();
-                        break;
-                        case 2:ifstream ifl1("TravelDetails.txt",ios::binary);
-                            if(!ifl1)
-                            cout<<"\nError";
-                            ifl1.read((char*)&TD,sizeof(TD));
-                            while(!ifl1.eof())
-                            {
-                            if(TD.gtcode()==acceptcode)
-                            {
-                                break;
-                            }
-                            ifl1.read((char*)&TD,sizeof(TD));
-                            }
-                            TD.t_output();
-                            ifl1.close();
-                        break;
-                        case 3:do
-                                {
-                                    system("cls");
-                                    cout<<"\n\n\n\t Edit Details ";
-                                    cout<<"\n\n\t\tPlease select from among the editing options:\n\n";
-                                    cout<<"\t\t\t\t1.Modify\n\n\t\t\t\t2.Delete\n\n\t\t\t\t3.Back\n\n\t\t\t\t ";
-                                    cin>>opt3;
-                                    switch(opt3)
-                                    {
-                                        case 1:do
-                                        {
-                                            system("cls");
-                                            cout<<"\n\n\t\t Modificaton \n";
-                                            cout<<"\t\t               ~~~~~";
-                                            cout<<"\n\n\tChoose The Type Of Details You Want To Modify:\n\n\t\t\t1.Personal Details\n\n\t\t\t2.Travel Details\n\n\t\t\t3.Back\n\n\t\t\t ";
-                                            cin>>opt4;
-                                            switch(opt4)
-                                            {
-                                            case 1:editp(acceptcode);
-                                                break;
-                                            case 2:editt(acceptcode);
-                                                break;
-                                            case 3:break;
-                                            }
-                                        }while(opt4!=3);
-                                        break;
-                                        case 2:deletion(acceptcode);
-                                        opt3=3;
-                                        opt2=5;
-                                        break;
-                                        case 3:break;
-                                    }
-                                }while(opt3!=3);
-                        break;
-                        case 4:ifstream ifl3("PersonalDetails.txt",ios::binary);
-                            if(!ifl3)
-                            cout<<"\nError";
-                            ifl3.read((char*)&PD,sizeof(PD));
-                            while(!ifl3.eof())
-                            {
-                            if(PD.givecode()==acceptcode)
-                            {
-                                break;
-                            }
-                            ifl3.read((char*)&PD,sizeof(PD));
-                            }
-                            ifstream ifl2("TravelDetails.txt",ios::binary);
-                            if(!ifl2)
-                            cout<<"\nError";
-                            ifl2.read((char*)&TD,sizeof(TD));
-                            while(!ifl2.eof())
-                            {
-                            if(TD.gtcode()==acceptcode)
-                            {
-                                break;
-                            }
-                            ifl2.read((char*)&TD,sizeof(TD));
-                            }
-                            TD.accept(PD.givenum());
-                            TD.compute();
-                            ifl2.close();
+                        ifstream ifl("PersonalDetails.txt",ios::binary);
+                        if(!ifl)
+                        cout<<"\nError";
+                        ifl.read((char*)&PD,sizeof(PD));
+                        while(!ifl.eof())
+                        {
+                        if(PD.givecode()==acceptcode)
+                        {
                             break;
-                        case 5:break;
+                        }
+                        ifl.read((char*)&PD,sizeof(PD));
+                        }
+                        PD.p_output();
+                        ifl.close();
                     }
-                }while(opt2!=5);
+                    else if(opt2==2)
+                    {
+                        ifstream ifl1("TravelDetails.txt",ios::binary);
+                        if(!ifl1)
+                        cout<<"\nError";
+                        ifl1.read((char*)&TD,sizeof(TD));
+                        while(!ifl1.eof())
+                        {
+                        if(TD.gtcode()==acceptcode)
+                        {
+                            break;
+                        }
+                        ifl1.read((char*)&TD,sizeof(TD));
+                        }
+                        TD.t_output();
+                        ifl1.close();
+                    }
+                    else if(opt2==3)
+                    {
+                        do
+                        {
+                            system("cls");
+                            cout<<"\n\n\n\t Edit Details ";
+                            cout<<"\n\n\t\tPlease select from among the editing options:\n\n";
+                            cout<<"\t\t\t\t1.Modify\n\n\t\t\t\t2.Delete\n\n\t\t\t\t3.Back\n\n\t\t\t\t ";
+                            cin>>opt3;
+                            switch(opt3)
+                            {
+                                case 1:do
+                                    {
+                                        system("cls");
+                                        cout<<"\n\n\t\t Modificaton \n";
+                                        cout<<"\t\t               ~~~~~";
+                                        cout<<"\n\n\tChoose The Type Of Details You Want To Modify:\n\n\t\t\t1.Personal Details\n\n\t\t\t2.Travel Details\n\n\t\t\t3.Back\n\n\t\t\t ";
+                                        cin>>opt4;
+                                        switch(opt4)
+                                        {
+                                        case 1:editp(acceptcode);
+                                            break;
+                                        case 2:editt(acceptcode);
+                                            break;
+                                        case 3:break;
+                                        }
+                                    }while(opt4!=3);
+                                break;
+                                case 2:deletion(acceptcode);
+                                    opt3=3;
+                                    opt2=5;
+                                break;
+                                case 3:break;
+                            }
+                        } while (opt3!=3);
+                    }
+                    else if(opt2==4)
+                    {
+                        ifstream ifl3("PersonalDetails.txt",ios::binary);
+                        if(!ifl3)
+                        cout<<"\nError";
+                        ifl3.read((char*)&PD,sizeof(PD));
+                        while(!ifl3.eof())
+                        {
+                        if(PD.givecode()==acceptcode)
+                        {
+                            break;
+                        }
+                        ifl3.read((char*)&PD,sizeof(PD));
+                        }
+                        ifstream ifl2("TravelDetails.txt",ios::binary);
+                        if(!ifl2)
+                        cout<<"\nError";
+                        ifl2.read((char*)&TD,sizeof(TD));
+                        while(!ifl2.eof())
+                        {
+                        if(TD.gtcode()==acceptcode)
+                        {
+                            break;
+                        }
+                        ifl2.read((char*)&TD,sizeof(TD));
+                        }
+                        TD.accept(PD.givenum());
+                        TD.compute();
+                        ifl2.close();
+                    }
+                    else if(opt2==5)
+                        break;
+                } while (opt3!=3);
             }
         break;
-      case 3:ofstream fil("INITIALL.txt",ios::binary); //storing code value
-	     if(!fil)
-	     cout<<"\nError";
-	     fil.write((char*)&code,sizeof(code));
-	     fil.close();
-	     system("cls");
-	     getch();
-	     exit(0);
+        case 3:ofstream fil("INITIALL.txt",ios::binary); //storing code value
+            if(!fil)
+            cout<<"\nError";
+            fil.write((char*)&code,sizeof(code));
+            fil.close();
+            getch();
+	        exit(0);
+        break;
     }
     getch();
   }while(1); //infinite loop till exit selected
